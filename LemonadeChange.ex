@@ -3,20 +3,16 @@ defmodule Solution do
 
   @spec lemonade_change(bills :: [integer]) :: boolean
   def lemonade_change(bills) do
-    float = %Solution{}
 
     output =
-      Enum.scan(bills, [float], fn (i, acc) ->
-        [up] = acc
-        IO.inspect acc
-
+      Enum.scan(bills, [%Solution{}], fn (i, [acc]) ->
         float =
-          if up.in_business do
-            up
+          if acc.in_business do
+            acc
             |> bump_float(i)
             |> change_to_give(i)
           else
-            up
+            acc
           end
         [float]
     end)

@@ -1,22 +1,22 @@
 defmodule Solution do
-  defstruct [five: 0, ten: 0, twenty: 0, in_business: true, transactions: 0]
+  defstruct [five: 0, ten: 0, in_business: true]
 
   @spec lemonade_change(bills :: [integer]) :: boolean
   def lemonade_change(bills) do
 
-    output =
+    [result] =
       Enum.scan(bills, [%Solution{}], fn (i, [acc]) ->
         float =
-          if acc.in_business do
-            acc
-            |> bump_float(i)
-            |> change_to_give(i)
-          else
-            acc
+          case acc.in_business do
+            false -> acc
+            true ->
+              acc
+              |> bump_float(i)
+              |> change_to_give(i)
           end
         [float]
-    end)
-    [result] = :lists.last(output)
+      end)
+      |> :lists.last()
     result.in_business
   end
 
@@ -32,17 +32,11 @@ defmodule Solution do
     %Solution{float | five: (float.five - 1), in_business: true}
   end
 
-  def change_to_give(%Solution{} = float, 5), do:
-    %Solution{float | in_business: true}
+  def change_to_give(%Solution{} = float, 5), do: %Solution{float | in_business: true}
+  def change_to_give(%Solution{} = float, _), do: %Solution{float | in_business: false}
 
-  def change_to_give(%Solution{} = float, _), do:
-    %Solution{float | in_business: false}
-
-  def bump_float(%Solution{} = float, 5), do:
-    %Solution{float | five: (float.five + 1), transactions: (float.transactions + 1)}
-  def bump_float(%Solution{} = float, 10), do:
-    %Solution{float | ten: (float.ten + 1), transactions: (float.transactions + 1)}
-  def bump_float(%Solution{} = float, 20), do:
-    %Solution{float | twenty: (float.twenty + 1), transactions: (float.transactions + 1)}
+  def bump_float(%Solution{} = float, 5), do: %Solution{float | five: (float.five + 1)}
+  def bump_float(%Solution{} = float, 10), do: %Solution{float | ten: (float.ten + 1)}
+  def bump_float(%Solution{} = float, 20), do: float
 
 end

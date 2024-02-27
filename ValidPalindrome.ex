@@ -5,31 +5,22 @@ defmodule Solution do
   characters is a valid palindrome.
   """
 
+  @valid_chars ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9"]
+
   @spec is_palindrome(s :: String.t) :: boolean
-  def is_palindrome(s) do
-    lower = String.downcase(s)
-    len = String.length(lower)
+  def is_palindrome(string) do
+    listed =
+      string
+      |> String.downcase()
+      |> String.codepoints()
 
-    broken =
-      Enum.scan(1..len, [], fn (x, acc) ->
-        sub = String.slice(lower, x-1, 1)
-        case alpha_char(sub) do
-          true ->
-            IO.inspect sub
-            [sub | acc]
-          false -> acc
-        end
-      end)
-    :lists.last(broken)
+    :lists.foldl(fn (x, acc) ->
+      case :lists.member(x, @valid_chars) do
+        true -> [x | acc]
+        false -> acc
+      end
+    end, [], listed)
     |> valid_palindrome()
-  end
-
-  @doc """
-  Determines whether a character is a valid alphanumeric or not.
-  """
-  defp alpha_char(val) do
-    letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9"]
-    :lists.member(val, letters)
   end
 
   @doc """
